@@ -1,0 +1,52 @@
+name: Start benchmark
+
+on:
+  workflow_dispatch:
+
+jobs:
+  java-test:
+    name: run java benchmark
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./java/benchmark-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build project (Maven)
+        run: |
+          mvn -B -f ./pom.xml package -DskipTests
+
+      - name: Run benchmark
+        id: benchmark
+        run: |
+          set -o pipefail
+          echo "Starting benchmark..."
+          start=$(date +%s%3N)
+
+          JAR=$(ls target/*jar 2>/dev/null | head -n 1 || true)
+          if [ -z "$JAR" ]; then
+            echo "No jar found in target/"
+            exit 1
+          fi
+
+          echo "Running jar: $JAR"
+          java -jar "$JAR" 3 500 50 10 | tee result.txt
+
+          end=$(date +%s%3N)
+          duration=$((end - start))
+
+          echo "Execution time: ${duration} ms"
+          echo "duration=${duration}" >> $GITHUB_OUTPUT
+
+      - name: Save result
+        run: |
+          echo "Java benchmark duration: ${{ steps.benchmark.outputs.duration }} ms"
