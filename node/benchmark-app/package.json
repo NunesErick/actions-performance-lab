@@ -1,0 +1,12 @@
+{
+  "name": "benchmark-app",
+  "version": "1.0.0",
+  "description": "Node benchmark app mirroring Java/Go implementations",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}

@@ -1,0 +1,23 @@
+# Java
+/java/benchmark-app/target/
+# ignore any other 'target' dirs (top-level or nested)
+/target/
+**/target/
+
+# Go
+/go/benchmark-app/benchmark-app
+
+# Node
+/node/benchmark-app/node_modules/
+
+# C#/.NET
+/csharp/benchmark-app/bin/
+/csharp/benchmark-app/obj/
+
+# Common run artifacts
+**/result.txt
+
+# OS / editor
+.DS_Store
+.vscode/
+*.log

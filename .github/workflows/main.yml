@@ -50,3 +50,115 @@ jobs:
       - name: Save result
         run: |
           echo "Java benchmark duration: ${{ steps.benchmark.outputs.duration }} ms"
+
+  go-test:
+    name: run go benchmark
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./go/benchmark-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Build project
+        run: |
+          go build -o benchmark-app .
+
+      - name: Run benchmark
+        id: benchmark
+        run: |
+          set -o pipefail
+          echo "Starting benchmark..."
+          start=$(date +%s%3N)
+
+          ./benchmark-app 3 500 50 10 | tee result.txt
+
+          end=$(date +%s%3N)
+          duration=$((end - start))
+
+          echo "Execution time: ${duration} ms"
+          echo "duration=${duration}" >> $GITHUB_OUTPUT
+
+      
+
+  node-test:
+    name: run node benchmark
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./node/benchmark-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps
+        run: |
+          # no dependencies required currently, this step kept for parity
+          node -v
+
+      - name: Run benchmark
+        id: benchmark
+        run: |
+          set -o pipefail
+          echo "Starting benchmark..."
+          start=$(date +%s%3N)
+
+          node index.js 3 500 50 10 | tee result.txt
+
+          end=$(date +%s%3N)
+          duration=$((end - start))
+
+          echo "Execution time: ${duration} ms"
+          echo "duration=${duration}" >> $GITHUB_OUTPUT
+
+      
+
+  csharp-test:
+    name: run csharp benchmark
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./csharp/benchmark-app
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build project
+        run: |
+          dotnet build -c Release
+
+      - name: Run benchmark
+        id: benchmark
+        run: |
+          set -o pipefail
+          echo "Starting benchmark..."
+          start=$(date +%s%3N)
+
+          dotnet run --project . -- 3 500 50 10 | tee result.txt
+
+          end=$(date +%s%3N)
+          duration=$((end - start))
+
+          echo "Execution time: ${duration} ms"
+          echo "duration=${duration}" >> $GITHUB_OUTPUT
+
+      
