@@ -38,7 +38,6 @@ public class BenchmarkApp {
             long tIo = ioTask(ioMB);
             System.out.printf("io_ms:%d\n", tIo / 1_000_000);
 
-            System.gc();
             Thread.sleep(200);
         }
 
@@ -51,12 +50,12 @@ public class BenchmarkApp {
         int size = Math.max(16, Math.min(n, 20000));
         int repeats = 3;
 
-        long state = 0L;
+        int state = 0;
         for (int r = 0; r < repeats; r++) {
             int[] arr = new int[size];
             for (int i = 0; i < size; i++) {
-                state = (state * 1664525L + 1013904223L) & 0xFFFFFFFFL;
-                arr[i] = (int) state;
+                state = state * 1664525 + 1013904223;
+                arr[i] = state;
             }
             bubbleSort(arr);
         }

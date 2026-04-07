@@ -6,6 +6,11 @@ using System.Text.RegularExpressions;
 
 class Program
 {
+    static readonly Regex _cpuRegex = new Regex(
+        "(a+b+)+c?",
+        RegexOptions.Compiled,
+        TimeSpan.FromSeconds(10)
+    );
     static int Main(string[] args)
     {
         int iterations = 3;
@@ -33,7 +38,6 @@ class Program
             var tIo = IoTask(ioMB);
             Console.WriteLine($"io_ms:{tIo.TotalMilliseconds:0}");
 
-            System.GC.Collect();
             System.Threading.Thread.Sleep(200);
         }
 
@@ -64,10 +68,9 @@ class Program
         var sb = new System.Text.StringBuilder(size * 8);
         for (int i = 0; i < size * 8; i++) sb.Append((char)('a' + (i % 26)));
         var big = sb.ToString();
-        var regex = new Regex("(a+b+)+c?");
         for (int i = 0; i < 100; i++)
         {
-            var m = regex.Matches(big);
+            var m = _cpuRegex.Matches(big);
             foreach (Match _ in m) { }
         }
 

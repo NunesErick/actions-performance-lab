@@ -3,6 +3,8 @@
 
 const fs = require('fs')
 const path = require('path')
+const os = require('os')
+const crypto = require('crypto')
 
 function nowMs() { return Number(BigInt(Date.now())) }
 
@@ -91,8 +93,7 @@ function memTask(memMB) {
 
 function ioTask(ioMB) {
   const start = process.hrtime.bigint()
-  const tmp = fs.mkdtempSync(path.join(require('os').tmpdir(), 'bench-io-'))
-  const file = path.join(tmp, 'data.dat')
+  const file = path.join(os.tmpdir(), 'bench-io-' + crypto.randomUUID().replace(/-/g, '') + '.dat')
   const fd = fs.openSync(file, 'w')
   const buf = Buffer.alloc(1024 * 1024)
   for (let i = 0; i < buf.length; i += 4096) buf[i] = 1
@@ -103,7 +104,7 @@ function ioTask(ioMB) {
   fs.closeSync(fd)
   // read back
   fs.readFileSync(file)
-  try { fs.unlinkSync(file); fs.rmdirSync(tmp) } catch (e) {}
+  try { fs.unlinkSync(file) } catch (e) {}
   const elapsed = Number(process.hrtime.bigint() - start) / 1e6
   return Math.round(elapsed)
 }
