@@ -39,7 +39,7 @@ jobs:
           fi
 
           echo "Running jar: $JAR"
-          java -jar "$JAR" 3 500 50 10 | tee result.txt
+          java -jar "$JAR" 1500 1500 1500 1500
 
           end=$(date +%s%3N)
           duration=$((end - start))
@@ -78,7 +78,7 @@ jobs:
           echo "Starting benchmark..."
           start=$(date +%s%3N)
 
-          ./benchmark-app 3 500 50 10 | tee result.txt
+          ./benchmark-app 1500 1500 1500 1500
 
           end=$(date +%s%3N)
           duration=$((end - start))
@@ -116,7 +116,7 @@ jobs:
           echo "Starting benchmark..."
           start=$(date +%s%3N)
 
-          node index.js 3 500 50 10 | tee result.txt
+          node index.js 1500 1500 1500 1500
 
           end=$(date +%s%3N)
           duration=$((end - start))
@@ -153,7 +153,7 @@ jobs:
           echo "Starting benchmark..."
           start=$(date +%s%3N)
 
-          dotnet run --project . -- 3 500 50 10 | tee result.txt
+          dotnet run --project . -- 1500 1500 1500 1500
 
           end=$(date +%s%3N)
           duration=$((end - start))
