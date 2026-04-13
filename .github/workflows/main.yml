@@ -2,6 +2,15 @@ name: Start benchmark
 
 on:
   workflow_dispatch:
+    inputs:
+      threads:
+        description: 'Number of threads'
+        required: true
+        default: '10'
+      requests:
+        description: 'Number of requests'
+        required: true
+        default: '1500'
 
 jobs:
   java-test:
@@ -39,7 +48,7 @@ jobs:
           fi
 
           echo "Running jar: $JAR"
-          java -jar "$JAR" 10 1500 1500 1500
+          java -jar "$JAR" ${{ inputs.threads }} ${{ inputs.requests }} ${{ inputs.requests }} ${{ inputs.requests }}
 
           end=$(date +%s%3N)
           duration=$((end - start))
@@ -78,15 +87,13 @@ jobs:
           echo "Starting benchmark..."
           start=$(date +%s%3N)
 
-          ./benchmark-app 10 1500 1500 1500
+          ./benchmark-app ${{ inputs.threads }} ${{ inputs.requests }} ${{ inputs.requests }} ${{ inputs.requests }}
 
           end=$(date +%s%3N)
           duration=$((end - start))
 
           echo "Execution time: ${duration} ms"
           echo "duration=${duration}" >> $GITHUB_OUTPUT
-
-      
 
   node-test:
     name: run node benchmark
@@ -106,7 +113,6 @@ jobs:
 
       - name: Install deps
         run: |
-          # no dependencies required currently, this step kept for parity
           node -v
 
       - name: Run benchmark
@@ -116,15 +122,13 @@ jobs:
           echo "Starting benchmark..."
           start=$(date +%s%3N)
 
-          node index.js 10 1500 1500 1500
+          node index.js ${{ inputs.threads }} ${{ inputs.requests }} ${{ inputs.requests }} ${{ inputs.requests }}
 
           end=$(date +%s%3N)
           duration=$((end - start))
 
           echo "Execution time: ${duration} ms"
           echo "duration=${duration}" >> $GITHUB_OUTPUT
-
-      
 
   csharp-test:
     name: run csharp benchmark
@@ -153,12 +157,10 @@ jobs:
           echo "Starting benchmark..."
           start=$(date +%s%3N)
 
-          dotnet run --project . -- 10 1500 1500 1500
+          dotnet run --project . -- ${{ inputs.threads }} ${{ inputs.requests }} ${{ inputs.requests }} ${{ inputs.requests }}
 
           end=$(date +%s%3N)
           duration=$((end - start))
 
           echo "Execution time: ${duration} ms"
           echo "duration=${duration}" >> $GITHUB_OUTPUT
-
-      
